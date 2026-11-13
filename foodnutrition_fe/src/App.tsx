@@ -9,6 +9,7 @@ import ScanPage from './pages/ScanPage'
 import ScanResultPage from './pages/ScanResultPage'
 import ComparePage from './pages/ComparePage'
 import HistoryPage from './pages/HistoryPage'
+import CompleteProfilePage from './pages/CompleteProfilePage'
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/scan/result" element={<ScanResultPage />} />
         <Route path="/compare" element={<ComparePage />} />
         <Route path="/history" element={<HistoryPage />} />
+        <Route path="/complete/profile" element={<CompleteProfilePage />} />
       </Routes>
     </BrowserRouter>
   )

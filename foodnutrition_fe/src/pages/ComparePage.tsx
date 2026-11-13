@@ -1,6 +1,16 @@
 
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import {
+  GitCompareArrows,
+  ArrowLeftRight,
+  ScanLine,
+  LayoutDashboard,
+  Lightbulb,
+  Info,
+  ArrowRight,
+} from 'lucide-react'
+import Sidebar from '../components/layout/Sidebar'
 
 type Product = {
   id: string
@@ -77,154 +87,185 @@ function ComparePage() {
 
   return (
     <div className="dashboard-page">
-      <aside className="dashboard-sidebar">
-        <h2 className="dashboard-logo">foodnutrition</h2>
+      <Sidebar />
 
-        <nav className="dashboard-nav">
-          <Link to="/dashboard">Dashboard</Link>
-          <Link to="/scan">Scan Product</Link>
-          <Link to="/compare" className="active">Compare Products</Link>
-          <Link to="/history">Scan History</Link>
-        </nav>
-
-        <div className="sidebar-bottom">
-          <Link to="/">Back to Website</Link>
-          <Link to="/login">Log Out</Link>
-        </div>
-      </aside>
-
-      <main className="dashboard-main">
+      <main className="dashboard-main compare-page-main">
+        {/* HEADER */}
         <header className="compare-header">
           <div>
             <p className="dashboard-greeting">PRODUCT COMPARISON</p>
             <h1>Compare Products</h1>
-            <p>Discover the nutritional differences between two products.</p>
+            <p>
+              Discover the nutritional differences between two products.
+            </p>
           </div>
         </header>
 
+        {/* INTRO */}
         <section className="compare-intro">
-          <span className="compare-intro-icon">⚖️</span>
+          <div className="compare-intro-icon">
+            <GitCompareArrows size={30} />
+          </div>
+
           <div>
+            <p className="compare-intro-label">SMART COMPARISON</p>
             <h2>Make informed food choices</h2>
             <p>
-              Select two food products to compare their nutritional
+              Select two food products and compare their nutritional
               information side by side.
             </p>
           </div>
         </section>
 
-        <section className="compare-selection">
-          <div className="compare-product-selector">
-            <div className="compare-product-label">
-              <span className="product-number">01</span>
-              <label htmlFor="firstProduct">First Product</label>
-            </div>
-
-            <select
-              id="firstProduct"
-              value={firstId}
-              onChange={(event) => setFirstId(event.target.value)}
-            >
-              {sampleProducts.map((product) => (
-                <option
-                  key={product.id}
-                  value={product.id}
-                  disabled={product.id === secondId}
-                >
-                  {product.name}
-                </option>
-              ))}
-            </select>
-
-            <p>{firstProduct.category}</p>
-          </div>
-
-          <div className="compare-versus">VS</div>
-
-          <div className="compare-product-selector">
-            <div className="compare-product-label">
-              <span className="product-number">02</span>
-              <label htmlFor="secondProduct">Second Product</label>
-            </div>
-
-            <select
-              id="secondProduct"
-              value={secondId}
-              onChange={(event) => setSecondId(event.target.value)}
-            >
-              {sampleProducts.map((product) => (
-                <option
-                  key={product.id}
-                  value={product.id}
-                  disabled={product.id === firstId}
-                >
-                  {product.name}
-                </option>
-              ))}
-            </select>
-
-            <p>{secondProduct.category}</p>
-          </div>
-        </section>
-
-        <section className="compare-results">
-          <div className="compare-results-heading">
+        {/* PRODUCT SELECTION */}
+        <section className="compare-selection-section">
+          <div className="compare-section-heading">
             <div>
-              <h2>Nutrition Comparison</h2>
-              <p>Compare the nutritional values of both products.</p>
+              <h2>Select Products</h2>
+              <p>Choose two products you want to compare.</p>
             </div>
             <span className="compare-demo-badge">SAMPLE DATA</span>
           </div>
 
-          <div className="compare-table">
-            <div className="compare-table-header">
-              <div>NUTRIENT</div>
-              <div>{firstProduct.name}</div>
-              <div>{secondProduct.name}</div>
+          <div className="compare-selection">
+            <div className="compare-product-selector">
+              <div className="compare-product-label">
+                <span className="product-number">01</span>
+                <label htmlFor="firstProduct">First Product</label>
+              </div>
+
+              <select
+                id="firstProduct"
+                value={firstId}
+                onChange={(event) => setFirstId(event.target.value)}
+              >
+                {sampleProducts.map((product) => (
+                  <option
+                    key={product.id}
+                    value={product.id}
+                    disabled={product.id === secondId}
+                  >
+                    {product.name}
+                  </option>
+                ))}
+              </select>
+
+              <div className="compare-selected-product">
+                <span>{firstProduct.category}</span>
+                <strong>{firstProduct.name}</strong>
+                <small>Serving size: {firstProduct.serving}</small>
+              </div>
             </div>
 
-            {nutrientRows.map((nutrient) => (
-              <div className="compare-table-row" key={nutrient.key}>
-                <div className="compare-nutrient-name">
-                  {nutrient.label}
-                </div>
-                <div>
-                  <strong>
-                    {firstProduct[nutrient.key]} {nutrient.unit}
-                  </strong>
-                </div>
-                <div>
-                  <strong>
-                    {secondProduct[nutrient.key]} {nutrient.unit}
-                  </strong>
-                </div>
+            <div className="compare-versus">
+              <span>VS</span>
+              <ArrowLeftRight size={20} />
+            </div>
+
+            <div className="compare-product-selector">
+              <div className="compare-product-label">
+                <span className="product-number">02</span>
+                <label htmlFor="secondProduct">Second Product</label>
               </div>
-            ))}
+
+              <select
+                id="secondProduct"
+                value={secondId}
+                onChange={(event) => setSecondId(event.target.value)}
+              >
+                {sampleProducts.map((product) => (
+                  <option
+                    key={product.id}
+                    value={product.id}
+                    disabled={product.id === firstId}
+                  >
+                    {product.name}
+                  </option>
+                ))}
+              </select>
+
+              <div className="compare-selected-product">
+                <span>{secondProduct.category}</span>
+                <strong>{secondProduct.name}</strong>
+                <small>Serving size: {secondProduct.serving}</small>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* COMPARISON TABLE */}
+        <section className="compare-results">
+          <div className="compare-results-heading">
+            <div>
+              <h2>Nutrition Comparison</h2>
+              <p>
+                Compare the nutritional values of both selected products.
+              </p>
+            </div>
+            <div className="compare-results-icon">
+              <GitCompareArrows size={23} />
+            </div>
+          </div>
+
+          <div className="compare-table-wrapper">
+            <div className="compare-table">
+              <div className="compare-table-header">
+                <div>NUTRIENT</div>
+                <div>{firstProduct.name}</div>
+                <div>{secondProduct.name}</div>
+              </div>
+
+              {nutrientRows.map((nutrient) => (
+                <div className="compare-table-row" key={nutrient.key}>
+                  <div className="compare-nutrient-name">
+                    {nutrient.label}
+                  </div>
+
+                  <div>
+                    <strong>
+                      {firstProduct[nutrient.key]} {nutrient.unit}
+                    </strong>
+                  </div>
+
+                  <div>
+                    <strong>
+                      {secondProduct[nutrient.key]} {nutrient.unit}
+                    </strong>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
           <p className="compare-serving-note">
             Serving sizes: {firstProduct.name} — {firstProduct.serving};
             {' '}{secondProduct.name} — {secondProduct.serving}.
-            Values are shown as sample data and serving sizes may differ.
+            Values are sample data. Serving sizes may differ.
           </p>
         </section>
 
+        {/* DISCLAIMER */}
         <section className="compare-disclaimer">
-          <span>💡</span>
-          <p>
-            Nutritional values alone do not determine which product is
-            healthier for everyone. Consider serving size, ingredients,
-            and your individual needs when comparing products.
-          </p>
+          <div className="compare-disclaimer-icon">
+            <Lightbulb size={22} />
+          </div>
+          <div>
+            <h3>Good to know</h3>
+            <p>
+              Nutritional values alone do not determine which product is
+              healthier for everyone. Consider serving size, ingredients,
+              and your individual needs when comparing products.
+            </p>
+          </div>
         </section>
 
+        {/* FOOTER ACTIONS */}
         <div className="compare-footer-actions">
           <Link to="/scan" className="compare-secondary-button">
-            + Scan Another Product
+            <ScanLine size={17} />
+            Scan Another Product
           </Link>
-          <Link to="/dashboard" className="compare-primary-button">
-            Back to Dashboard
-          </Link>
+
         </div>
       </main>
     </div>

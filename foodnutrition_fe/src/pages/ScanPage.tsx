@@ -1,14 +1,25 @@
 
 import { useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import type { ChangeEvent } from 'react'
+import {
+  Camera,
+  ImagePlus,
+  ScanLine,
+  X,
+  Lightbulb,
+  ArrowRight,
+  Upload,
+} from 'lucide-react'
+import Sidebar from '../components/layout/Sidebar'
 
 function ScanPage() {
   const fileInputRef = useRef<HTMLInputElement>(null)
+
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [productName, setProductName] = useState('')
   const [error, setError] = useState('')
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
 
     if (!file) return
@@ -21,6 +32,10 @@ function ScanPage() {
     if (file.size > 5 * 1024 * 1024) {
       setError('Image size must be less than 5 MB.')
       return
+    }
+
+    if (selectedImage) {
+      URL.revokeObjectURL(selectedImage)
     }
 
     setError('')
@@ -36,6 +51,20 @@ function ScanPage() {
 
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
+    }
+  }
+
+  const openCamera = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.setAttribute('capture', 'environment')
+      fileInputRef.current.click()
+    }
+  }
+
+  const openGallery = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.removeAttribute('capture')
+      fileInputRef.current.click()
     }
   }
 
@@ -63,41 +92,84 @@ function ScanPage() {
 
   return (
     <div className="dashboard-page">
-      <aside className="dashboard-sidebar">
-        <h2 className="dashboard-logo">foodnutrition</h2>
+      <Sidebar />
 
-        <nav className="dashboard-nav">
-          <Link to="/dashboard">Dashboard</Link>
-          <Link to="/scan" className="active">Scan Product</Link>
-          <Link to="/compare">Compare Products</Link>
-          <Link to="/history">Scan History</Link>
-        </nav>
-
-        <div className="sidebar-bottom">
-          <Link to="/">Back to Website</Link>
-          <Link to="/login">Log Out</Link>
-        </div>
-      </aside>
-
-      <main className="dashboard-main">
+      <main className="dashboard-main scan-page-main">
+        {/* HEADER */}
         <header className="scan-header">
           <div>
             <p className="dashboard-greeting">FOOD ANALYSIS</p>
             <h1>Scan Nutrition Label</h1>
-            <p>Upload a product label to understand its nutritional content.</p>
+            <p>
+              Upload a product label to understand its nutritional content.
+            </p>
           </div>
         </header>
 
+        {/* SCAN CONTENT */}
         <div className="scan-content">
+          {/* LEFT: INSTRUCTIONS */}
           <section className="scan-instructions">
+            <div className="scan-instruction-icon">
+              <ScanLine size={30} />
+            </div>
+
+            <p className="scan-instruction-label">SMART FOOD ANALYSIS</p>
             <h2>Let's analyze your food!</h2>
-            <p>
+
+            <p className="scan-instruction-description">
               Take a clear photo of the nutrition facts panel on your
-              food packaging. Make sure all the information is readable.
+              food packaging. Our application will help you understand
+              what's inside your favorite products.
             </p>
+
+            <div className="scan-instruction-steps">
+              <div className="scan-step">
+                <span>01</span>
+                <div>
+                  <strong>Enter product name</strong>
+                  <p>Tell us which product you want to analyze.</p>
+                </div>
+              </div>
+
+              <div className="scan-step">
+                <span>02</span>
+                <div>
+                  <strong>Upload nutrition label</strong>
+                  <p>Take a photo or choose an image from your device.</p>
+                </div>
+              </div>
+
+              <div className="scan-step">
+                <span>03</span>
+                <div>
+                  <strong>Analyze your product</strong>
+                  <p>Review the nutritional information.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="scan-tips">
+              <div className="scan-tips-heading">
+                <Lightbulb size={19} />
+                <h3>Tips for a better scan</h3>
+              </div>
+
+              <ul>
+                <li>Make sure the nutrition label is clearly visible.</li>
+                <li>Avoid blurry or dark images.</li>
+                <li>Capture the entire nutrition facts panel.</li>
+              </ul>
+            </div>
           </section>
 
+          {/* RIGHT: SCAN FORM */}
           <section className="scan-form">
+            <div className="scan-form-heading">
+              <h2>Upload Your Product</h2>
+              <p>Fill in the details below to get started.</p>
+            </div>
+
             <div className="scan-form-group">
               <label htmlFor="productName">Product Name</label>
               <input
@@ -110,56 +182,57 @@ function ScanPage() {
             </div>
 
             <div className="scan-form-group">
-              <label>Upload Nutrition Label</label>
+              <label>Nutrition Label Image</label>
 
-               
-                {!selectedImage ? (
+              {!selectedImage ? (
                 <div className="scan-upload-options">
-                    <button
+                  <button
                     type="button"
                     className="scan-option-card"
-                    onClick={() => {
-                        if (fileInputRef.current) {
-                        fileInputRef.current.setAttribute('capture', 'environment')
-                        fileInputRef.current.click()
-                        }
-                    }}
-                    >
-                    <span className="scan-option-icon">📸</span>
+                    onClick={openCamera}
+                  >
+                    <span className="scan-option-icon">
+                      <Camera size={28} />
+                    </span>
                     <h3>Take a Photo</h3>
                     <p>Use your camera to capture a nutrition label.</p>
-                    <span className="scan-option-link">Open Camera →</span>
-                    </button>
+                    <span className="scan-option-link">
+                      Open Camera <ArrowRight size={15} />
+                    </span>
+                  </button>
 
-                    <button
+                  <button
                     type="button"
                     className="scan-option-card"
-                    onClick={() => {
-                        if (fileInputRef.current) {
-                        fileInputRef.current.removeAttribute('capture')
-                        fileInputRef.current.click()
-                        }
-                    }}
-                    >
-                    <span className="scan-option-icon">🖼️</span>
+                    onClick={openGallery}
+                  >
+                    <span className="scan-option-icon">
+                      <ImagePlus size={28} />
+                    </span>
                     <h3>Upload from Gallery</h3>
                     <p>Choose an existing image from your device.</p>
-                    <span className="scan-option-link">Choose Image →</span>
-                    </button>
+                    <span className="scan-option-link">
+                      Choose Image <ArrowRight size={15} />
+                    </span>
+                  </button>
                 </div>
-                ) : (
+              ) : (
                 <div className="image-preview">
-                    <img src={selectedImage} alt="Nutrition label preview" />
+                  <img
+                    src={selectedImage}
+                    alt="Nutrition label preview"
+                  />
 
-                    <button
+                  <button
                     type="button"
                     className="remove-image-button"
                     onClick={handleRemoveImage}
-                    >
+                  >
+                    <X size={16} />
                     Remove Image
-                    </button>
+                  </button>
                 </div>
-                )}  
+              )}
 
               <input
                 ref={fileInputRef}
@@ -169,16 +242,12 @@ function ScanPage() {
                 onChange={handleImageUpload}
               />
 
-              {error && <p className="scan-error">{error}</p>}
-            </div>
+              <p className="scan-upload-note">
+                <Upload size={15} />
+                Supported formats: JPG, JPEG, PNG. Maximum size: 5 MB.
+              </p>
 
-            <div className="scan-tips">
-              <h3>📌 Tips for a better scan</h3>
-              <ul>
-                <li>Make sure the nutrition label is clearly visible.</li>
-                <li>Avoid blurry or dark images.</li>
-                <li>Capture the entire nutrition facts panel.</li>
-              </ul>
+              {error && <p className="scan-error">{error}</p>}
             </div>
 
             <button
@@ -186,7 +255,8 @@ function ScanPage() {
               className="analyze-button"
               onClick={handleAnalyze}
             >
-              Analyze Nutrition Label →
+              Analyze Nutrition Label
+              <ArrowRight size={18} />
             </button>
           </section>
         </div>

@@ -1,6 +1,18 @@
 
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import {
+  Camera,
+  Salad,
+  Search,
+  ScanLine,
+  Flame,
+  Dumbbell,
+  Clock3,
+  ArrowRight,
+  PackageSearch,
+} from 'lucide-react'
+import Sidebar from '../components/layout/Sidebar'
 
 type ScanHistory = {
   id: number
@@ -41,32 +53,18 @@ const sampleHistory: ScanHistory[] = [
 function HistoryPage() {
   const [search, setSearch] = useState('')
 
-  const filteredHistory = sampleHistory.filter((item) =>
-    item.name.toLowerCase().includes(search.toLowerCase()) ||
-    item.category.toLowerCase().includes(search.toLowerCase())
+  const filteredHistory = sampleHistory.filter(
+    (item) =>
+      item.name.toLowerCase().includes(search.toLowerCase()) ||
+      item.category.toLowerCase().includes(search.toLowerCase())
   )
 
   return (
     <div className="dashboard-page">
-      <aside className="dashboard-sidebar">
-        <Link to="/dashboard" className="dashboard-logo">
-          <span>🥗</span> foodnutrition
-        </Link>
+      <Sidebar />
 
-        <nav className="dashboard-nav">
-          <Link to="/dashboard">▦ Dashboard</Link>
-          <Link to="/scan">⌕ Scan Product</Link>
-          <Link to="/compare">⇄ Compare Products</Link>
-          <Link to="/history" className="active">◷ Scan History</Link>
-        </nav>
-
-        <div className="sidebar-bottom">
-          <Link to="/">← Back to Website</Link>
-          <Link to="/login">↪ Log Out</Link>
-        </div>
-      </aside>
-
-      <main className="dashboard-main">
+      <main className="dashboard-main history-page-main">
+        {/* HEADER */}
         <header className="history-header">
           <div>
             <p className="dashboard-greeting">YOUR ACTIVITY</p>
@@ -75,24 +73,37 @@ function HistoryPage() {
           </div>
 
           <Link to="/scan" className="dashboard-primary-button">
-            + Scan New Product
+            <ScanLine size={18} />
+            Scan New Product
           </Link>
         </header>
 
+        {/* SUMMARY */}
         <section className="history-summary">
-          <div className="stat-card">
-            <span className="stat-icon">📷</span>
-            <p>Total Scans</p>
-            <h2>{sampleHistory.length}</h2>
+          <div className="history-stat-card">
+            <div className="history-stat-icon">
+              <Camera size={22} />
+            </div>
+            <div className="history-stat-info">
+              <p>Total Scans</p>
+              <h2>{sampleHistory.length}</h2>
+              <span>Products analyzed</span>
+            </div>
           </div>
 
-          <div className="stat-card">
-            <span className="stat-icon">🥗</span>
-            <p>Products Explored</p>
-            <h2>{sampleHistory.length}</h2>
+          <div className="history-stat-card">
+            <div className="history-stat-icon">
+              <Salad size={22} />
+            </div>
+            <div className="history-stat-info">
+              <p>Products Explored</p>
+              <h2>{sampleHistory.length}</h2>
+              <span>Unique products</span>
+            </div>
           </div>
         </section>
 
+        {/* HISTORY LIST */}
         <section className="history-section">
           <div className="history-section-heading">
             <div>
@@ -100,54 +111,96 @@ function HistoryPage() {
               <p>Browse your previously scanned products.</p>
             </div>
 
-            <input
-              type="text"
-              className="history-search"
-              placeholder="Search products..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
+            <div className="history-search-wrapper">
+              <Search size={18} />
+              <input
+                type="text"
+                className="history-search"
+                placeholder="Search products..."
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                aria-label="Search scan history"
+              />
+            </div>
           </div>
 
           <div className="history-list">
             {filteredHistory.length > 0 ? (
               filteredHistory.map((item) => (
-                <div className="history-item" key={item.id}>
-                  <div className="history-product-icon">🥫</div>
+                <article className="history-item" key={item.id}>
+                  <div className="history-product-icon">
+                    <PackageSearch size={25} />
+                  </div>
 
                   <div className="history-product-info">
                     <h3>{item.name}</h3>
-                    <p>{item.category} · {item.date}</p>
+
+                    <div className="history-product-meta">
+                      <span>{item.category}</span>
+                      <span className="history-meta-dot">•</span>
+                      <span className="history-date">
+                        <Clock3 size={13} />
+                        {item.date}
+                      </span>
+                    </div>
                   </div>
 
                   <div className="history-nutrients">
                     <div>
+                      <Flame size={16} />
                       <strong>{item.energy} kcal</strong>
                       <span>Energy</span>
                     </div>
+
                     <div>
+                      <Dumbbell size={16} />
                       <strong>{item.protein} g</strong>
                       <span>Protein</span>
                     </div>
                   </div>
 
-                  <span className="history-status">Scanned</span>
-                </div>
+                  <span className="history-status">
+                    <span />
+                    Scanned
+                  </span>
+                </article>
               ))
             ) : (
-              <div className="empty-state">
-                <span>🔎</span>
+              <div className="history-empty-state">
+                <div className="history-empty-icon">
+                  <Search size={30} />
+                </div>
                 <h3>No products found</h3>
-                <p>Try searching with another product name.</p>
+                <p>
+                  We couldn't find any products matching "{search}".
+                  Try another product name or category.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setSearch('')}
+                >
+                  Clear Search
+                </button>
               </div>
             )}
           </div>
 
-          <p className="history-demo-note">
-            These are sample records for frontend demonstration.
-            Your actual scan history will be connected to the database later.
-          </p>
+          <div className="history-demo-note">
+            <Clock3 size={16} />
+            <p>
+              These are sample records for frontend demonstration.
+              Your actual scan history will be connected to the database later.
+            </p>
+          </div>
         </section>
+
+        {/* FOOTER */}
+        <div className="history-footer">
+          <p>
+            Showing {filteredHistory.length} of {sampleHistory.length} products
+          </p>
+
+        </div>
       </main>
     </div>
   )
