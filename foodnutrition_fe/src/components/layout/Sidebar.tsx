@@ -1,6 +1,7 @@
 
 import { useState } from 'react'
-import { NavLink, Link } from 'react-router-dom'
+import { NavLink, Link, useNavigate } from 'react-router-dom'
+import { supabase } from '../../lib/supabase'
 import {
   LayoutDashboard,
   ScanLine,
@@ -15,6 +16,20 @@ import {
 
 function Sidebar() {
   const [isOpen, setIsOpen] = useState(false)
+
+const navigate = useNavigate()
+
+const handleLogout = async () => {
+  const { error } = await supabase.auth.signOut()
+
+  if (error) {
+    console.error('Logout failed:', error.message)
+    return
+  }
+
+  closeMenu()
+  navigate('/login', { replace: true })
+}
 
   const menuItems = [
     {
@@ -92,10 +107,14 @@ function Sidebar() {
             <span>Back to Website</span>
           </Link>
 
-          <Link to="/login" className="sidebar-bottom-link logout-link" onClick={closeMenu}>
-            <LogOut size={18} />
-            <span>Log Out</span>
-          </Link>
+          <button
+  type="button"
+  className="sidebar-bottom-link logout-link"
+  onClick={handleLogout}
+>
+  <LogOut size={18} />
+  <span>Log Out</span>
+</button>
 
           <div className="sidebar-version">
             <span>FoodNutrition</span>

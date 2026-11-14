@@ -6,7 +6,6 @@ import {
   History,
   Salad,
   ArrowRight,
-  BarChart3,
   Activity,
 } from 'lucide-react'
 import Sidebar from '../components/layout/Sidebar'

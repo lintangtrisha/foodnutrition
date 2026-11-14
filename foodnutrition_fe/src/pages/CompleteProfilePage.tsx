@@ -4,7 +4,6 @@ import {
   UserRound,
   Ruler,
   Scale,
-  Activity,
   Leaf,
   ArrowRight,
   ArrowLeft,

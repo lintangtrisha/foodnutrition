@@ -1,4 +1,5 @@
-
+import { useEffect, useState } from 'react'
+import { getInsights, type Insight } from '../services/api'
 import { Link } from 'react-router-dom'
 import {
   ArrowLeft,
@@ -27,6 +28,42 @@ function ScanResultPage() {
   }
 
   const productName = scanData.productName || 'Sample Food Product'
+
+  const [insights, setInsights] = useState<Insight[]>([])
+  const [isLoadingInsights, setIsLoadingInsights] = useState(true)
+  const [insightError, setInsightError] = useState<string | null>(null)
+
+  useEffect(() => {
+    let isMounted = true
+
+    async function fetchInsights() {
+      try {
+        const response = await getInsights()
+
+        if (isMounted) {
+          setInsights(response.data)
+        }
+      } catch (error) {
+        if (isMounted) {
+          setInsightError(
+            error instanceof Error
+              ? error.message
+              : 'Failed to load nutrition insights.'
+          )
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoadingInsights(false)
+        }
+      }
+    }
+
+    fetchInsights()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
 
   const nutrients = [
     {
@@ -181,18 +218,54 @@ function ScanResultPage() {
           </div>
 
           <div className="nutrient-insights-grid">
-            {nutrients.map((nutrient) => (
-              <article
-                className="nutrient-insight-card"
-                key={nutrient.name}
-              >
-                <div className="nutrient-insight-top">
-                  <h3>{nutrient.name}</h3>
-                  <span>{nutrient.amount}</span>
-                </div>
-                <p>{nutrient.description}</p>
-              </article>
-            ))}
+            {isLoadingInsights ? (
+              <p>Loading nutrition insights...</p>
+            ) : insightError ? (
+              <p role="alert">
+                Unable to load nutrition insights. Please try again later.
+              </p>
+            ) : insights.length > 0 ? (
+              insights.map((insight) => (
+                <article
+                  className="nutrient-insight-card"
+                  key={insight.id}
+                >
+                  <div className="nutrient-insight-top">
+                    <h3>{insight.term}</h3>
+                  </div>
+
+                  <p>{insight.content}</p>
+
+                  {insight.source_reference && (
+                    <div className="insight-source">
+                      <small>
+                        Source: {insight.source_reference.institution}
+                        {' — '}
+                        {insight.source_reference.title}
+                      </small>
+
+                      <a
+                        href={insight.source_reference.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        View source
+                      </a>
+
+                      {insight.source_reference.section_page && (
+                        <small>
+                          {insight.source_reference.section_page}
+                        </small>
+                      )}
+                    </div>
+                  )}
+                </article>
+              ))
+            ) : (
+              <p>
+                No nutrition insights are available yet.
+              </p>
+            )}
           </div>
 
           <div className="result-learning-note">

@@ -5,10 +5,7 @@ import {
   GitCompareArrows,
   ArrowLeftRight,
   ScanLine,
-  LayoutDashboard,
   Lightbulb,
-  Info,
-  ArrowRight,
 } from 'lucide-react'
 import Sidebar from '../components/layout/Sidebar'
 

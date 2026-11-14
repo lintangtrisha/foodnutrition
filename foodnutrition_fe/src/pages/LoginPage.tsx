@@ -1,10 +1,45 @@
-
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Eye, EyeOff } from 'lucide-react'
+import { supabase } from '../lib/supabase'
 
 function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const navigate = useNavigate()
+
+const location = useLocation()
+
+const from = location.state?.from?.pathname || '/dashboard'
+
+  async function handleLogin(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setError('')
+    setLoading(true)
+
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+
+      if (error) throw error
+
+      navigate(from, { replace: true })
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Login gagal. Silakan coba lagi.'
+      )
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="auth-page">
@@ -22,7 +57,7 @@ function LoginPage() {
           <p>Log in to continue your nutrition journey.</p>
         </div>
 
-        <form className="auth-form">
+        <form className="auth-form" onSubmit={handleLogin}>
           <div className="form-group">
             <label htmlFor="email">Email Address</label>
             <input
@@ -31,6 +66,8 @@ function LoginPage() {
               type="email"
               placeholder="Enter your email"
               autoComplete="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
               required
             />
           </div>
@@ -45,6 +82,8 @@ function LoginPage() {
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Enter your password"
                 autoComplete="current-password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
                 required
               />
 
@@ -61,10 +100,7 @@ function LoginPage() {
 
           <div className="auth-login-options">
             <label className="auth-remember">
-              <input
-                type="checkbox"
-                name="remember"
-              />
+              <input type="checkbox" name="remember" />
               <span>Remember me</span>
             </label>
 
@@ -73,11 +109,18 @@ function LoginPage() {
             </Link>
           </div>
 
+          {error && (
+            <p role="alert" className="auth-error">
+              {error}
+            </p>
+          )}
+
           <button
-            type="button"
+            type="submit"
             className="button button-primary auth-submit"
+            disabled={loading}
           >
-            Log In
+            {loading ? 'Logging in...' : 'Log In'}
           </button>
         </form>
 
@@ -86,11 +129,11 @@ function LoginPage() {
         </p>
 
         <Link to="/" className="back-home">
-          ← Back to Home
+          &larr; Back to Home
         </Link>
       </div>
 
-      <p className="auth-copyright">© 2026 FoodNutrition</p>
+      <p className="auth-copyright">&copy; 2026 FoodNutrition</p>
     </div>
   )
 }

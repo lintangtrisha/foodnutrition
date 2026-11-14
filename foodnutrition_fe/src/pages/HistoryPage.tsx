@@ -9,7 +9,6 @@ import {
   Flame,
   Dumbbell,
   Clock3,
-  ArrowRight,
   PackageSearch,
 } from 'lucide-react'
 import Sidebar from '../components/layout/Sidebar'
