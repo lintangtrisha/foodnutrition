@@ -1,4 +1,5 @@
-
+import { useNavigate } from 'react-router-dom'
+import { analyzeScan } from '../services/api'
 import { useRef, useState } from 'react'
 import type { ChangeEvent } from 'react'
 import {
@@ -15,6 +16,11 @@ import Sidebar from '../components/layout/Sidebar'
 function ScanPage() {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  const navigate = useNavigate()
+
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
+
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [productName, setProductName] = useState('')
   const [error, setError] = useState('')
@@ -24,7 +30,7 @@ function ScanPage() {
 
     if (!file) return
 
-    if (!file.type.startsWith('image/')) {
+    if (!['image/jpeg', 'image/png'].includes(file.type)) {
       setError('Please upload a valid image file.')
       return
     }
@@ -40,6 +46,7 @@ function ScanPage() {
 
     setError('')
     setSelectedImage(URL.createObjectURL(file))
+    setSelectedFile(file)
   }
 
   const handleRemoveImage = () => {
@@ -48,6 +55,7 @@ function ScanPage() {
     }
 
     setSelectedImage(null)
+    setSelectedFile(null)
 
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
@@ -68,8 +76,8 @@ function ScanPage() {
     }
   }
 
-  const handleAnalyze = () => {
-    if (!selectedImage) {
+  const handleAnalyze = async () => {
+    if (!selectedFile) {
       setError('Please upload a nutrition label first.')
       return
     }
@@ -79,16 +87,30 @@ function ScanPage() {
       return
     }
 
-    sessionStorage.setItem(
-      'foodnutrition_scan',
-      JSON.stringify({
-        productName,
-        image: selectedImage,
-      })
-    )
+  try {
+    setError('')
+    setIsUploading(true)
 
-    window.location.href = '/scan/result'
+  const result = await analyzeScan(productName.trim(), selectedFile)
+
+     navigate('/scan/result', {
+       state: {
+         productName: productName.trim(),
+         image: selectedImage,
+         upload: result,
+       },
+     })
+   } catch (error) {
+      setError(
+       error instanceof Error
+         ? error.message
+         : 'Failed to upload nutrition label.'
+     )
+    } finally {
+      setIsUploading(false)
+    }
   }
+
 
   return (
     <div className="dashboard-page">
@@ -250,14 +272,15 @@ function ScanPage() {
               {error && <p className="scan-error">{error}</p>}
             </div>
 
-            <button
-              type="button"
-              className="analyze-button"
-              onClick={handleAnalyze}
-            >
-              Analyze Nutrition Label
-              <ArrowRight size={18} />
-            </button>
+          <button
+            type="button"
+            className="analyze-button"
+            onClick={handleAnalyze}
+            disabled={isUploading}
+          >
+            {isUploading ? 'Analyzing...' : 'Analyze Nutrition Label'}
+            {!isUploading && <ArrowRight size={18} />}
+          </button>
           </section>
         </div>
       </main>

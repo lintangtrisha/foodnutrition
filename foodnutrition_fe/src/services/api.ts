@@ -71,3 +71,55 @@ export function getSourceReferences() {
     '/source-references'
   )
 }
+
+export interface NutritionFact {
+  name: string
+  amount: string | null
+}
+
+export interface Ingredient {
+  name: string
+  category: string | null
+  description: string | null
+}
+
+export interface ScanUploadResponse {
+  status: 'success'
+  message: string
+  data: {
+    product_name: string
+    serving_size: string | null
+    nutrition_facts: NutritionFact[]
+    ingredients: Ingredient[]
+    summary: string
+    notes: string[]
+  }
+}
+
+export async function analyzeScan(
+  productName: string,
+  image: File
+): Promise<ScanUploadResponse> {
+  const formData = new FormData()
+
+  formData.append('product_name', productName)
+  formData.append('image', image)
+
+  const response = await fetch(`${API_BASE_URL}/scans/analyze`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+    },
+    body: formData,
+  })
+
+  const result = await response.json()
+
+  if (!response.ok) {
+    throw new Error(
+      result.message || `Scan request failed: ${response.status}`
+    )
+  }
+
+  return result as ScanUploadResponse
+}
