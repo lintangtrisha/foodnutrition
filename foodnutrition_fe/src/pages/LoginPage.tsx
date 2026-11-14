@@ -133,7 +133,7 @@ const from = location.state?.from?.pathname || '/dashboard'
         </Link>
       </div>
 
-      <p className="auth-copyright">&copy; 2026 FoodNutrition</p>
+      <p className="auth-copyright">&copy; 2026 Nutrilens</p>
     </div>
   )
 }

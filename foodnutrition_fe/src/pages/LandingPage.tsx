@@ -6,8 +6,8 @@ function LandingPage() {
     <div className="landing-page">
       <header className="navbar">
         <Link to="/" className="brand">
-          <span className="brand-icon">F</span>
-          <span>food<span className="brand-highlight">nutrition</span></span>
+          <span className="brand-icon">N</span>
+          <span>Nutri<span className="brand-highlight">lens</span></span>
         </Link>
 
         <nav className="nav-links">
@@ -160,7 +160,7 @@ function LandingPage() {
             <span className="eyebrow">HOW IT WORKS</span>
             <h2>A smarter way to read food labels.</h2>
             <p>
-              No need to guess what the numbers mean. FoodNutrition
+              No need to guess what the numbers mean. Nutrilens
               helps you understand the information already printed
               on your food packaging.
             </p>
@@ -205,11 +205,11 @@ function LandingPage() {
 
       <footer className="footer">
         <Link to="/" className="brand">
-          <span className="brand-icon">F</span>
-          <span>food<span className="brand-highlight">nutrition</span></span>
+          <span className="brand-icon">N</span>
+          <span>Nutri<span className="brand-highlight">lens</span></span>
         </Link>
         <p>Understand your food. Make informed choices.</p>
-        <span className="copyright">© 2026 FoodNutrition. All rights reserved.</span>
+        <span className="copyright">© 2026 Nutrilens. All rights reserved.</span>
       </footer>
     </div>
   )

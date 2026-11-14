@@ -231,7 +231,7 @@ function CompleteProfilePage() {
         </Link>
 
         <p className="auth-copyright">
-          © 2026 FoodNutrition
+          © 2026 Nutrilens
         </p>
       </div>
     </div>

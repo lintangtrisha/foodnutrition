@@ -63,7 +63,7 @@ const handleLogout = async () => {
           <span className="sidebar-brand-icon">
             <Leaf size={22} />
           </span>
-          <span>foodnutrition</span>
+          <span>Nutrilens</span>
         </Link>
 
         <button
@@ -117,7 +117,7 @@ const handleLogout = async () => {
 </button>
 
           <div className="sidebar-version">
-            <span>FoodNutrition</span>
+            <span>Nutrilens</span>
             <span>Smart Food Choices</span>
           </div>
         </div>

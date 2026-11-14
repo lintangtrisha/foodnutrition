@@ -71,7 +71,7 @@ function RegisterPage() {
 
       <div className="auth-container">
         <div className="auth-heading">
-          <span className="eyebrow">JOIN FOODNUTRITION</span>
+          <span className="eyebrow">JOIN NUTRILENS</span>
           <h1>Create your account</h1>
           <p>Start understanding your food choices today.</p>
         </div>
@@ -200,7 +200,7 @@ function RegisterPage() {
         </Link>
       </div>
 
-      <p className="auth-copyright">&copy; 2026 FoodNutrition</p>
+      <p className="auth-copyright">&copy; 2026 Nutrilens</p>
     </div>
   )
 }
